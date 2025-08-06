@@ -3,22 +3,26 @@ package manager
 import (
 	"fmt"
 
-	"k8s.io/klog/v2"
+	"github.com/kupher-tools/kube-sentinel/internal/utils"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 )
 
-func NewManager(certDir string, port int) (manager.Manager, error) {
+func NewManager() (manager.Manager, error) {
 
-	cfg := ctrl.GetConfigOrDie()
+	cfg, err := utils.GetKubeConfig()
+	if err != nil {
+		ctrl.Log.Error(err, "Error getting kube config")
+		return nil, err
+	}
 
 	options := manager.Options{}
 
 	mgr, err := ctrl.NewManager(cfg, options)
 	if err != nil {
-		klog.Errorf("Failed to create controller manager: %v", err)
+		ctrl.Log.Error(err, "Failed to create controller manager")
 		return nil, fmt.Errorf("failed to create controller manager: %w", err)
 	}
-	klog.Info("Controller Manager created successfully")
+	ctrl.Log.Info("Controller Manager created successfully")
 	return mgr, nil
 }

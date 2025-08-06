@@ -1,7 +1,8 @@
-package webhook
+package manager
 
 import (
-	"k8s.io/klog/v2"
+	"github.com/kupher-tools/kube-sentinel/internal/handler"
+	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
@@ -9,7 +10,7 @@ import (
 
 func Register(mgr manager.Manager) error {
 
-	klog.Info("Registering Kuper's kube-sentinel : A mutating admission controller")
+	ctrl.Log.Info("Registering Kuper's kube-sentinel : A mutating admission controller")
 
 	server := webhook.NewServer(webhook.Options{
 		Port:    443,
@@ -17,7 +18,7 @@ func Register(mgr manager.Manager) error {
 	})
 
 	server.Register("/kube-sentinel", &admission.Webhook{
-		Handler: &KubeSentinel{},
+		Handler: &(handler.KubeSentinel{}),
 	})
 	return nil
 

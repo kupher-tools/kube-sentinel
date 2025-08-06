@@ -1,11 +1,11 @@
-package webhook
+package handler
 
 import (
 	"context"
 	"encoding/json"
 
 	corev1 "k8s.io/api/core/v1"
-	"k8s.io/klog"
+	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 )
 
@@ -17,11 +17,11 @@ func (m *KubeSentinel) Handle(_ context.Context, req admission.Request) admissio
 	pod := &corev1.Pod{}
 
 	if err := m.decoder.Decode(req, pod); err != nil {
-		klog.Errorf("Failed to decode pod: %v", err)
+		ctrl.Log.Error(err, "Failed to decode pod")
 		return admission.Errored(400, err)
 	}
 
-	klog.V(2).Infof("Admission review for pod: %s/%s", pod.Namespace, pod.Name)
+	ctrl.Log.Info("Admission review for pod: %s/%s", pod.Namespace, pod.Name)
 
 	// Mutate container security context
 	for i := range pod.Spec.Containers {
@@ -47,11 +47,11 @@ func (m *KubeSentinel) Handle(_ context.Context, req admission.Request) admissio
 	// Return the mutated pod object as a patch
 	marshaledPod, err := json.Marshal(pod)
 	if err != nil {
-		klog.Errorf("Failed to marshal mutated pod: %v", err)
+		ctrl.Log.Error(err, "Failed to marshal mutated pod")
 		return admission.Errored(500, err)
 	}
 
-	klog.V(2).Info("Pod mutated successfully")
+	ctrl.Log.Info("Pod mutated successfully")
 	return admission.PatchResponseFromRaw(req.Object.Raw, marshaledPod)
 }
 
