@@ -1,0 +1,24 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: kube-sentinel-controller
+webhooks:
+  - name: kube-sentinel.kupher.io
+    admissionReviewVersions: ["v1"]
+    sideEffects: None
+    rules:
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CREATE"]
+        resources: ["pods"]
+        scope: "*"
+    failurePolicy: Ignore
+    clientConfig:
+      service:
+        name: kube-sentinel
+        namespace: default
+        path: /kube-sentinel
+        port: 443
+      caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJkVENDQVJ1Z0F3SUJBZ0lRWVV3d1VOK1p2NGpsRUtrNFJodFJoakFLQmdncWhrak9QUVFEQWpBUE1RMHcKQ3dZRFZRUUtFd1J1YVd3eE1DQVhEVEkxTURnd056QTBNVFV3TUZvWUR6SXhNalV3TnpFME1EUXhOVEF3V2pBUApNUTB3Q3dZRFZRUUtFd1J1YVd3eE1Ga3dFd1lIS29aSXpqMENBUVlJS29aSXpqMERBUWNEUWdBRUtrd21wNzZPCkdReWVFSmZUWUV4bGdwR2xDUHQ4OXc0aGxUalpEWHFTNW8ydWdiZjFyQ3RXYjR4amY5NW5BNTRFb0ZuYVFQcW0KS3BRUWxNVE1wUnFoc0tOWE1GVXdEZ1lEVlIwUEFRSC9CQVFEQWdJRU1CTUdBMVVkSlFRTU1Bb0dDQ3NHQVFVRgpCd01CTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3SFFZRFZSME9CQllFRklLV2ZFbGM4ZnRTZHRpVGZzdWJLTSsvCll5WnlNQW9HQ0NxR1NNNDlCQU1DQTBnQU1FVUNJRlNwYTFtaGtGS0ZIQ2JkdTJVTHBlVmk2aURLRWs4YkFWcVQKMHA5czQxZ1RBaUVBNHhIMnVhY1RnWVF6ZGRzN3ZualFqNzl2aHFqTXlPTmpLdEtzZDFPNWxUOD0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+    
+   

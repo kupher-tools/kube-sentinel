@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-sentinel
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kube-sentinel
+  template:
+    metadata:
+      labels:
+        app: kube-sentinel
+    spec:
+     # automountServiceAccountToken: false
+      containers:
+        - name: webhook
+          image: kube-sentinel:0.0.3
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8443
+          volumeMounts:
+            - name: tls-certs
+              mountPath: /tls
+              readOnly: true
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "64Mi"
+            limits:
+              cpu: "500m"
+              memory: "128Mi"
+      volumes:
+        - name: tls-certs
+          secret:
+            secretName: kube-sentinel-tls

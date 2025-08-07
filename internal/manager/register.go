@@ -13,13 +13,21 @@ func Register(mgr manager.Manager) error {
 	ctrl.Log.Info("Registering Kuper's kube-sentinel : A mutating admission controller")
 
 	server := webhook.NewServer(webhook.Options{
-		Port:    443,
-		CertDir: "test",
+		Port:    8443,
+		CertDir: "/tls",
 	})
 
+	sentinel := &handler.KubeSentinel{}
+
 	server.Register("/kube-sentinel", &admission.Webhook{
-		Handler: &(handler.KubeSentinel{}),
+		Handler: sentinel,
 	})
+
+	if err := mgr.Add(server); err != nil {
+		ctrl.Log.Error(err, "Unable to add webhook server to manager:")
+		return err
+	}
+	ctrl.Log.Info("Server Registerted to manager successfully")
 	return nil
 
 }

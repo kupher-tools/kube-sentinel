@@ -6,6 +6,7 @@ import (
 	"github.com/kupher-tools/kube-sentinel/internal/utils"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
+	"sigs.k8s.io/controller-runtime/pkg/metrics/server"
 )
 
 func NewManager() (manager.Manager, error) {
@@ -16,7 +17,12 @@ func NewManager() (manager.Manager, error) {
 		return nil, err
 	}
 
-	options := manager.Options{}
+	options := ctrl.Options{
+		LeaderElection: false,
+		Metrics: server.Options{
+			BindAddress: "0", //disables metrics
+		},
+	}
 
 	mgr, err := ctrl.NewManager(cfg, options)
 	if err != nil {

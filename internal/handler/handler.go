@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
 	corev1 "k8s.io/api/core/v1"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -15,6 +16,11 @@ type KubeSentinel struct {
 
 func (m *KubeSentinel) Handle(_ context.Context, req admission.Request) admission.Response {
 	pod := &corev1.Pod{}
+
+	if m.decoder == nil {
+		ctrl.Log.Error(nil, "Decoder not injected")
+		return admission.Errored(500, fmt.Errorf("decoder not injected"))
+	}
 
 	if err := m.decoder.Decode(req, pod); err != nil {
 		ctrl.Log.Error(err, "Failed to decode pod")
