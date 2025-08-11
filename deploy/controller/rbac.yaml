@@ -1,0 +1,24 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: security-context-config-reader
+  namespace: default
+rules:
+- apiGroups: [""]
+  resources: ["configmaps"]
+  resourceNames: ["security-context-config"] # limit to just your configmap
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: security-context-config-reader-binding
+  namespace: default
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: default
+roleRef:
+  kind: Role
+  name: security-context-config-reader
+  apiGroup: rbac.authorization.k8s.io

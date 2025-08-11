@@ -15,7 +15,7 @@ spec:
      # automountServiceAccountToken: false
       containers:
         - name: webhook
-          image: kube-sentinel:0.0.3
+          image: kupher/kube-sentinel:v0.0.1
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8443
