@@ -39,27 +39,4 @@ Designed to extend beyond Pods — future support planned for other resources an
 ---
 
 ## 🧱 Architecture
-
-```text
-+---------------------------+
-|  Developer Applies a Pod |
-+------------+--------------+
-             |
-             v
-+-------------------------------+
-| kube-apiserver (Admission)   |
-| - Triggers MutatingWebhook   |
-+-------------------------------+
-             |
-             v
-+----------------------------+
-|     kube-sentinel          |
-| - Mutates Pod Spec         |
-| - Injects Security Context |
-+----------------------------+
-             |
-             v
-+----------------------------+
-|  Secured Pod is Deployed   |
-+----------------------------+
-
+<img width="1092" height="633" alt="image" src="https://github.com/user-attachments/assets/9f6a81fc-36ae-407e-babd-7f5ff3948e91" />
